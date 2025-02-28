@@ -1,0 +1,8 @@
+transformers
+torch
+pandas
+langdetect
+sentence-transformers
+sacremoses
+gradio
+numpy
