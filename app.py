@@ -1,9 +1,9 @@
 # Install required packages (for requirements.txt)
-# !pip install sentence-transformers torch transformers langdetect gradio
+# !pip install sentence-transformers torch langdetect googletrans==4.0.0-rc1 gradio
 
 from sentence_transformers import SentenceTransformer, util
-from transformers import pipeline
 from langdetect import detect
+from googletrans import Translator, LANGUAGES
 import gradio as gr
 import pickle
 import torch
@@ -17,26 +17,18 @@ titles = metadata['titles']
 albums = metadata['albums']
 lyric_embeddings = torch.tensor(metadata['lyric_embeddings'])
 
-# Translation function
+# Initialize the translator (only once, outside the function)
+translator = Translator()
+
 def translate_if_needed(input_sentence):
     detected_lang = detect(input_sentence)
-    if detected_lang != 'en':
+    if detected_lang != 'en' and detected_lang in LANGUAGES:
         try:
-            translator = pipeline(
-                "translation",
-                model=f"Helsinki-NLP/opus-mt-{detected_lang}-en",
-                device=0 if torch.cuda.is_available() else -1
-            )
-            translated = translator(input_sentence, max_length=512)[0]['translation_text']
+            translated = translator.translate(input_sentence, src=detected_lang, dest='en').text
+            return translated
         except Exception as e:
-            print(f"Translation failed for {detected_lang}: {e}. Using fallback.")
-            translator = pipeline(
-                "translation",
-                model="Helsinki-NLP/opus-mt-tc-big-en-de",  # Fallback model
-                device=0 if torch.cuda.is_available() else -1
-            )
-            translated = translator(input_sentence, max_length=512)[0]['translation_text']
-        return translated
+            print(f"Translation failed for {detected_lang}: {e}. Returning original.")
+            return input_sentence
     return input_sentence
 
 def find_most_similar_row(input_sentence):
@@ -61,7 +53,7 @@ interface = gr.Interface(
     inputs=gr.Textbox(label="Enter a sentence (any language)"),
     outputs=gr.Textbox(label="Most Similar Song Details"),
     title="Taylor Swift Song Matcher",
-    description="Find the most similar Taylor Swift song lyric based on your input, with automatic translation."
+    description="Find the most similar Taylor Swift song lyric based on your input, with fast translation."
 )
 
 interface.launch()

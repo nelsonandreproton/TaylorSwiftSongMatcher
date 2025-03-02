@@ -6,3 +6,4 @@ sentence-transformers
 sacremoses
 gradio
 numpy
+googletrans==4.0.0-rc1
