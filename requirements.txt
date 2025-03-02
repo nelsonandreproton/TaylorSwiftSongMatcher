@@ -6,5 +6,5 @@ sentence-transformers
 sacremoses
 gradio
 numpy
-googletrans==4.0.0-rc1
-httpcore==0.17.3  # Pin to a version compatible with googletrans 4.0.0-rc1
+googletrans
+httpcore
