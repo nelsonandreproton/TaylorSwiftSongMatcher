@@ -1,10 +1,5 @@
-transformers
-torch
-pandas
-langdetect
-sentence-transformers
-sacremoses
+sentence-transformers 
+torch 
+langdetect 
+deep-translator 
 gradio
-numpy
-googletrans
-httpcore
