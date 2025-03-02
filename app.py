@@ -1,6 +1,4 @@
-# Install required packages (for requirements.txt)
-# !pip install sentence-transformers torch langdetect googletrans==4.0.0-rc1 gradio
-
+# app.py
 from sentence_transformers import SentenceTransformer, util
 from langdetect import detect
 from googletrans import Translator, LANGUAGES
@@ -17,7 +15,7 @@ titles = metadata['titles']
 albums = metadata['albums']
 lyric_embeddings = torch.tensor(metadata['lyric_embeddings'])
 
-# Initialize the translator (only once, outside the function)
+# Initialize the translator
 translator = Translator()
 
 def translate_if_needed(input_sentence):
